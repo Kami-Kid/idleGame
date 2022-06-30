@@ -1,27 +1,31 @@
 const classes = {
     warrior : {atk: 8, def:4, spd:3, hp:20, mult:1.25, regen:3}
 }
+const enemies = {
+    bat : {hp : 5, atk: 1, def:0, spd:2, reward:10}
+}
 class Player{
-    constructor(pClass, Cps, Cpc, pAtk, pDef, pSpd, Hp, maxHp, atkMult, gold, regen){
-        //cps = coins/s, cpc = coins/click, P denotes player, 
+    constructor(pClass, Cps, Cpc, gold){
+        //cps = coins/s, cpc = coins/click 
         this.pClass = pClass;
         this.Cpc = Cpc;
         this.Cps = Cps;
-        this.pAtk = classes.warrior.atk;
-        this.pDef = classes.warrior.def;
-        this.pSpd = classes.warrior.spd;
+        this.Atk = classes.warrior.atk;
+        this.Def = classes.warrior.def;
+        this.Spd = classes.warrior.spd;
         this.Hp = classes.warrior.hp;
         this.maxHp = classes.warrior.hp;
         this.atkMult = classes.warrior.mult;
         this.gold = gold;
         this.regen = classes.warrior.regen;
         this.inBattle = 0;
+        this.atkCharge = 0;
     }
     takeDmg(dmgAmt) {
-        this.Hp -= dmgAmt*this.pDef;
+        this.Hp -= dmgAmt*this.Def;
     }
     dealDmg(Enemy){
-        Enemy.takeDmg(this.pAtk * this.dmgMult)
+        Enemy.takeDmg(this.Atk * this.dmgMult)
     }
     startBattle(){
         this.inBattle = 1
@@ -31,16 +35,20 @@ class Player{
     }
     addRegen(amt,type){
         if(type = "potion"){
+            duration = (typeof duration ==="undefined") ? null : duration
             this.regen+=amt
+            setTimeout(this.addDef, duration*1000, [amt*-1, "potion"])
             return
         }
         if(type = "armour"){
-            this.permRegen += amt
+            this.regen += amt
         }
     }
     addHp(amt, type, duration){
+        duration = (typeof duration ==="undefined") ? null : duration
         if(type = "potion"){
             this.Hp+=amt
+            setTimeout(this.addDef, duration*1000, [amt*-1, "potion"])
             return
         }
         if(type = "armour"){
@@ -50,12 +58,12 @@ class Player{
     addDef(amt, type, duration){
         duration = (typeof duration ==="undefined") ? null : duration
         if(type = "potion"){
-            this.pDef+=amt
+            this.Def+=amt
             setTimeout(this.addDef, duration*1000, [amt*-1, "potion"])
             return
         }
         if(type = "armour"){
-            this.pDef += amt
+            this.Def += amt
         }
     }
     changeArmour(stats){
@@ -63,23 +71,49 @@ class Player{
         this.addDef(stats.def, "armour")
         this.add
     }
+    getReward(amt){
+        this.gold += amt
+    }
 }
 class Enemy{
-    constructor(eHp, eAtk, eDef, eSpd, eReward){
-        this.eAtk = eAtk;
-        this.eDef = eDef;
-        this.eHp = eHp;
-        this.eReward = eReward;
-        this.eSpd = eSpd;
+    constructor(enemyType){
+        this.Atk = enemies.enemyType.atk;
+        this.Def = enemies.enemyType.def;
+        this.Hp = enemies.enemyType.hp;
+        this.Reward = enemies.enemyType.reward;
+        this.Spd = enemies.enemyType.spd;
+        this.atkCharge = 0;
     }
     takeDmg(Player){
-        this.eHp -= Player.pAtk*Player.atkMult*this.eDef;
+        this.Hp -= Player.Atk*Player.atkMult*this.Def;
         if(this.eHp <= 0){
-            Player.getReward(this.eReward)
+            Player.getReward(this.Reward)
             Player.endBattle()
         }
     }
+    dealDmg(Player){
+        Player.takeDmg(this.Atk)
+    }
 }
 
 
-const player = new Player("warrior", 1,10,)
+const player = new Player(warrior, 1, 5, 0)
+
+function beginBattle(Player, Enemy){
+    Player.startBattle()
+    if(Player.inBattle == 1){
+        setTimeout(battleTurn , 500, [Player, Enemy])
+    }
+}
+
+function battleTurn(Player, Enemy){
+    Player.atkCharge++
+    Enemy.atkCharge++
+    if(Player.atkCharge<=Player.Spd){
+        Player.dealDmg(Enemy)
+    }
+    if(Enemy.atkCharge<=Enemy.Spd){
+        Enemy.dealDmg(Player)
+    }
+
+}
