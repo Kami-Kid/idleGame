@@ -1,18 +1,21 @@
+const classes = {
+    warrior : {atk: 8, def:4, spd:3, hp:20, mult:1.25, regen:3}
+}
 class Player{
     constructor(pClass, Cps, Cpc, pAtk, pDef, pSpd, Hp, maxHp, atkMult, gold, regen){
         //cps = coins/s, cpc = coins/click, P denotes player, 
         this.pClass = pClass;
         this.Cpc = Cpc;
         this.Cps = Cps;
-        this.pAtk = pAtk;
-        this.pDef = pDef;
-        this.pSpd = pSpd;
-        this.Hp = Hp;
-        this.maxHp = maxHp
-        this.atkMult = atkMult;
+        this.pAtk = classes.warrior.atk;
+        this.pDef = classes.warrior.def;
+        this.pSpd = classes.warrior.spd;
+        this.Hp = classes.warrior.hp;
+        this.maxHp = classes.warrior.hp;
+        this.atkMult = classes.warrior.mult;
         this.gold = gold;
-        this.regen = regen;
-        this.permRegen  = regen;
+        this.regen = classes.warrior.regen;
+        this.inBattle = 0;
     }
     takeDmg(dmgAmt) {
         this.Hp -= dmgAmt*this.pDef;
@@ -21,10 +24,10 @@ class Player{
         Enemy.takeDmg(this.pAtk * this.dmgMult)
     }
     startBattle(){
-        this.regen = 0.5
+        this.inBattle = 1
     }
     endBattle(){
-        this.regen = this.permRegen
+        this.inBattle = 0
     }
     addRegen(amt,type){
         if(type = "potion"){
@@ -35,7 +38,7 @@ class Player{
             this.permRegen += amt
         }
     }
-    addHp(){
+    addHp(amt, type, duration){
         if(type = "potion"){
             this.Hp+=amt
             return
@@ -44,9 +47,11 @@ class Player{
             this.maxHp += amt
         }
     }
-    addHp(){
+    addDef(amt, type, duration){
+        duration = (typeof duration ==="undefined") ? null : duration
         if(type = "potion"){
             this.pDef+=amt
+            setTimeout(this.addDef, duration*1000, [amt*-1, "potion"])
             return
         }
         if(type = "armour"){
@@ -55,7 +60,8 @@ class Player{
     }
     changeArmour(stats){
         this.addRegen(stats.regen, "armour")
-        this.def
+        this.addDef(stats.def, "armour")
+        this.add
     }
 }
 class Enemy{
@@ -74,3 +80,6 @@ class Enemy{
         }
     }
 }
+
+
+const player = new Player("warrior", 1,10,)
