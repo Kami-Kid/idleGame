@@ -122,3 +122,6 @@ function updateUI() {
     document.querySelector(".hpUI").innerHTML = player.Hp + "/" + player.maxHp
     document.querySelector(".atkUI").innerHTML = player.Atk
 }
+setInterval(updateUI, 1000)
+
+document.querySelector("#battleInit").addEventListener("click", updateUI(player, new Enemy("bat")))
