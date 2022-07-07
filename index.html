@@ -6,20 +6,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>idle game</title>
+    <style>
+        .battleUI span {
+            position: absolute;
+            border-top: 100px;
+        }
+    </style>
 </head>
 
 <body>
-    <button id="battleInit"> begin test run</button>
-    <div id="battleUI">
-        <pre>
-        /////////////////////////////////////
-        ///    O                          ///
-        ///   /|\                         ///
-        ///   / \                         ///
-        /// Hp: <span id="hpUI"></span>                       ///
-        /// Atk: <span id="atkUI"></span>                       ///
-        /////////////////////////////////////
+    <button id="battleInit" onclick="exampleBattle()"> begin test run</button>
+    <div class="battleUI">
+        <span id="hpUI"></span>
+        <span id="eHp"></span>
+        <span id="atkUI"></span>
+        <span id="eAtk"></span>
+        <div>
+            <pre>
+            <canvas id="colours" style="background-color: green;" height="20" ></canvas>
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///                                                                                                             ///
+        ///      O                                                                                                      ///
+        ///     /|\                                                                                                     ///
+        ///     / \                                                                                                     ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///
+        ///                                                                                                             ///        
+        ///                                                                                                             ///
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         </pre>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>
